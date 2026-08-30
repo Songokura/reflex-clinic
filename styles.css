@@ -680,3 +680,13 @@ body.menu-open .lang{background:var(--mist-2)}
 body.menu-open .lang-btn{color:var(--muted)}
 body.menu-open .lang-btn:hover{color:var(--ink)}
 body.menu-open .lang-btn.is-active{background:var(--ink);color:#fff}
+
+/* ссылка на страницу-статью из карточки метода */
+.met-link{
+  display:inline-flex;align-items:center;gap:8px;margin-top:14px;
+  font:600 14px/1 var(--f-text);color:var(--mint);
+  transition:gap .3s var(--ease),color .3s;
+}
+.met-link::after{content:"";width:16px;height:1px;background:currentColor;transition:width .3s var(--ease)}
+.met-link:hover{color:#fff}
+.met-link:hover::after{width:26px}
