@@ -696,7 +696,7 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   .artcard-media img{object-position:center 18%;opacity:.8}
   .artcard-media::after{background:linear-gradient(180deg,rgba(228,246,241,.25) 0%,rgba(228,246,241,.10) 45%,#E6F7F2 100%)}
   .artcard-p{max-width:none}
-  .hero-img{object-position:60% 42%}
+  .hero-img{object-position:45% 46%}
   .hero-shade{
     background:
       linear-gradient(180deg,rgba(4,26,29,.58) 0%,rgba(4,26,29,.16) 24%,rgba(4,26,29,.70) 60%,rgba(4,26,29,.96) 100%),
