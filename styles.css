@@ -94,7 +94,7 @@ button{font:inherit;color:inherit}
 .hdr.is-solid .logo-word{color:var(--ink)}
 .hdr.is-solid .logo-sub{color:var(--muted)}
 
-.nav{display:flex;align-items:center;gap:clamp(14px,1.8vw,28px);margin-left:auto}
+.nav{display:flex;align-items:center;gap:clamp(12px,1.5vw,22px);margin-left:auto}
 .nav a{
   position:relative;font:500 14.5px/1 var(--f-text);color:rgba(255,255,255,.82);
   padding:8px 0;transition:color .3s;white-space:nowrap;
@@ -104,6 +104,24 @@ button{font:inherit;color:inherit}
 .nav a:hover::after{right:0}
 .hdr.is-solid .nav a{color:var(--ink)}
 .hdr.is-solid .nav a::after{background:var(--turq)}
+
+/* акцентная ссылка на статью о рефлексотомии */
+.nav a.nav-art{
+  display:inline-flex;align-items:center;gap:8px;font-weight:600;
+  color:var(--mint);padding:8px 13px;border-radius:999px;
+  background:rgba(143,233,212,.14);border:1px solid rgba(143,233,212,.40);
+  transition:color .3s,background .3s,border-color .3s;
+}
+.nav a.nav-art::after{content:none}
+.nav a.nav-art:hover{color:#fff;background:rgba(143,233,212,.26);border-color:var(--mint)}
+.nav-art-dot{
+  width:6px;height:6px;border-radius:50%;background:var(--mint);flex:0 0 auto;
+  animation:artpulse 2.4s var(--ease) infinite;
+}
+.hdr.is-solid .nav a.nav-art{color:var(--turq-3);background:var(--mint-2);border-color:rgba(18,179,166,.38)}
+.hdr.is-solid .nav a.nav-art:hover{color:var(--turq-3);background:#CCF2E8;border-color:var(--turq)}
+.hdr.is-solid .nav-art-dot{background:var(--turq)}
+@keyframes artpulse{0%,100%{transform:scale(1);opacity:1}55%{transform:scale(1.7);opacity:.5}}
 
 .hdr-right{display:flex;align-items:center;gap:12px;margin-left:auto;position:relative;z-index:3}
 
@@ -145,6 +163,8 @@ body.menu-open .mobnav{opacity:1;visibility:visible}
   padding:12px 0;border-bottom:1px solid var(--line);
   opacity:0;transform:translateY(14px);
 }
+.mobnav-in > a.mob-art{color:var(--turq-3);display:flex;align-items:center;gap:10px}
+.mobnav-in > a.mob-art::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--turq);flex:0 0 auto}
 body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-delay:calc(var(--i,0)*.045s + .08s)}
 @keyframes mnav{to{opacity:1;transform:none}}
 .mobnav-foot{margin-top:auto;padding-top:26px;display:grid;gap:14px;justify-items:start}
@@ -256,7 +276,6 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
 }
 .dir:hover .dir-media img{transform:scale(1.05)}
 .dir-body{position:relative;z-index:2;display:grid;height:100%;align-content:end;gap:14px;padding:clamp(24px,3vw,40px);color:#fff}
-.dir-n{font:500 12px/1 var(--f-disp);letter-spacing:.2em;color:var(--mint)}
 .dir-h{font:500 clamp(24px,2.6vw,36px)/1.1 var(--f-disp);letter-spacing:-.02em}
 .dir-list{display:flex;flex-wrap:wrap;gap:7px}
 .dir-list span{
@@ -312,12 +331,6 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
 .met{border-radius:var(--r-lg);overflow:hidden;background:var(--ink-2);display:flex;flex-direction:column}
 .met-media{position:relative;aspect-ratio:5/4;overflow:hidden}
 .met-media img{width:100%;height:100%;object-fit:cover;filter:saturate(.9)}
-.met-n{
-  position:absolute;left:18px;top:16px;z-index:2;
-  display:grid;place-items:center;width:38px;height:38px;border-radius:50%;
-  background:rgba(7,39,43,.55);border:1px solid var(--line-d);
-  font:500 12px/1 var(--f-disp);letter-spacing:.06em;color:var(--mint);backdrop-filter:blur(4px);
-}
 .met-body{padding:clamp(22px,2.2vw,32px);display:grid;gap:11px;align-content:start;flex:1}
 .met-h{font:500 clamp(20px,1.8vw,27px)/1.15 var(--f-disp);letter-spacing:-.02em}
 .met-p{font:400 15px/1.55 var(--f-text);color:var(--muted-d)}
@@ -327,6 +340,73 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
 }
 .met-note::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--turq);flex:0 0 auto}
 .mets-foot{margin-top:26px;font:400 15px/1.6 var(--f-text);color:var(--muted-d);border-left:2px solid var(--turq);padding-left:16px}
+
+/* ============================================================
+   БЛОК-ПЕРЕХОД НА СТАТЬЮ О РЕФЛЕКСОТОМИИ
+   ============================================================ */
+.artcta{padding:clamp(52px,6.5vw,96px) 0;background:var(--paper)}
+.artcard{
+  position:relative;display:grid;grid-template-columns:1.25fr .75fr;align-items:stretch;
+  border-radius:var(--r-lg);overflow:hidden;isolation:isolate;
+  background:linear-gradient(118deg,#D8F7EF 0%,#EAF7F3 46%,#F4FBF9 100%);
+  border:1px solid rgba(18,179,166,.22);
+  box-shadow:0 30px 70px -46px rgba(7,39,43,.55);
+  transition:transform .5s var(--ease),box-shadow .5s var(--ease),border-color .4s;
+}
+.artcard:hover{transform:translateY(-6px);box-shadow:0 40px 90px -46px rgba(7,39,43,.6);border-color:var(--turq)}
+.artcard-glow{
+  position:absolute;left:-8%;top:-40%;width:52%;aspect-ratio:1;border-radius:50%;z-index:0;
+  background:radial-gradient(circle,rgba(18,179,166,.20),rgba(18,179,166,0) 68%);
+  pointer-events:none;
+}
+.artcard-body{
+  position:relative;z-index:2;display:grid;align-content:center;gap:15px;
+  padding:clamp(28px,3.4vw,54px);color:var(--ink);
+}
+.artcard-eye{
+  display:inline-flex;align-items:center;gap:9px;width:max-content;
+  font:600 12px/1 var(--f-text);letter-spacing:.22em;text-transform:uppercase;color:var(--turq-3);
+}
+.artcard-eye i{
+  width:7px;height:7px;border-radius:50%;background:var(--turq);
+  animation:dotp 2.6s var(--ease) infinite;
+}
+.artcard-h{font:500 clamp(25px,3.1vw,42px)/1.1 var(--f-disp);letter-spacing:-.03em}
+.artcard-p{font:400 clamp(14.5px,1.15vw,17px)/1.55 var(--f-text);color:var(--muted);max-width:52ch}
+.artcard-tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:2px}
+.artcard-tags span{
+  font:400 13px/1 var(--f-text);color:var(--turq-3);
+  border:1px solid rgba(18,179,166,.30);border-radius:999px;padding:8px 13px;
+  background:rgba(255,255,255,.66);
+}
+.artcard-btn{
+  display:inline-flex;align-items:center;gap:10px;width:max-content;margin-top:10px;
+  padding:15px 26px;border-radius:999px;background:var(--turq);color:#fff;
+  font:600 15.5px/1 var(--f-text);
+  box-shadow:0 14px 30px -14px rgba(18,179,166,.95);
+  transition:background .3s,gap .35s var(--ease),box-shadow .35s;
+}
+.artcard:hover .artcard-btn{background:var(--turq-3);gap:16px;box-shadow:0 20px 40px -14px rgba(8,122,116,.95)}
+.artcard-media{
+  position:relative;z-index:1;display:block;overflow:hidden;min-height:260px;
+  background:linear-gradient(200deg,#CBF2E8 0%,#E2F5F0 62%,#EFFAF7 100%);
+}
+.artcard-media img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 14%;
+  mix-blend-mode:multiply;filter:contrast(1.14) saturate(0);opacity:.9;
+  transition:transform 1.2s var(--ease);
+}
+.artcard:hover .artcard-media img{transform:scale(1.04)}
+.artcard-media::after{
+  content:"";position:absolute;inset:0;z-index:2;
+  background:linear-gradient(90deg,#E1F5F0 0%,rgba(225,245,240,.30) 30%,rgba(225,245,240,0) 62%);
+}
+.artcard-pts{position:absolute;inset:0;width:100%;height:100%;z-index:3;pointer-events:none}
+.artcard-pts circle{fill:var(--turq)}
+.artcard-pts .ring{
+  fill:none;stroke:var(--turq);stroke-width:1.1;transform-box:fill-box;transform-origin:center;
+  animation:ping2 3.2s var(--ease) infinite;animation-delay:var(--d);
+}
 
 /* ============================================================
    МЕТАБОЛИЗМ
@@ -584,13 +664,16 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   .doc{grid-template-columns:1fr 1fr}
   .doc-photo-2{display:none}
 }
-@media (max-width:1100px){
+@media (max-width:1220px){
   .nav{display:none}
   .burger{display:block}
+}
+@media (max-width:1100px){
   .steps{grid-template-columns:repeat(2,1fr)}
   .metab-right{position:static}
 }
 @media (max-width:980px){
+  .artcard{grid-template-columns:1.05fr .95fr}
   .dirs-grid{grid-template-columns:1fr}
   .dir{min-height:clamp(340px,60vw,470px)}
   .cards{grid-template-columns:repeat(4,1fr)}
@@ -608,6 +691,11 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   .foot-contacts{justify-items:start;text-align:left}
 }
 @media (max-width:860px){
+  .artcard{grid-template-columns:1fr}
+  .artcard-media{order:-1;min-height:0;aspect-ratio:16/9}
+  .artcard-media img{object-position:center 18%;opacity:.8}
+  .artcard-media::after{background:linear-gradient(180deg,rgba(228,246,241,.25) 0%,rgba(228,246,241,.10) 45%,#E6F7F2 100%)}
+  .artcard-p{max-width:none}
   .hero-img{object-position:60% 42%}
   .hero-shade{
     background:
@@ -628,6 +716,8 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
 }
 @media (max-width:640px){
   body{font-size:16px}
+  .artcard-tags span{font-size:12.5px;padding:7px 11px}
+  .artcard-btn{width:100%;justify-content:center}
   .hdr-in{height:66px}
   .hero-in{padding-top:120px}
   .cards{grid-template-columns:1fr}

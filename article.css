@@ -6,6 +6,8 @@
 
 .page-article{background:var(--paper)}
 .page-article .hdr{background:rgba(255,255,255,.94);box-shadow:0 1px 0 var(--line),0 12px 30px -24px rgba(7,39,43,.55)}
+/* в шапке статьи 5 пунктов вместо 7 - строка помещается и ниже общего порога */
+@media (min-width:1101px){.nav{display:flex}.burger{display:none}}
 .nav a.is-here{color:var(--turq-3)}
 .hdr.is-solid .nav a.is-here::after{right:0;background:var(--turq)}
 
