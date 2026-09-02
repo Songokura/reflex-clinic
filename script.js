@@ -124,10 +124,26 @@
     pr_s_p:'Процедураның бағасын дәрігер диагностикадан кейін айтады: ол көрсетілімге, аймаққа және курс ұзақтығына байланысты. Бәріне бірдей прайс бізде жоқ.',
     pr_s_btn:'WhatsApp арқылы бағаны білу',
 
+    fl_eye:'Клиника ішінен',
+    fl_h2:'Клиника қандай және қабылдау қалай өтеді - 55 секундта',
+    fl_lead:'Кабинеттер, компьютерлік диагностика, дәрігердің жұмысы. Жароков көшесі, 137-дегі клиникамызда түсірілген.',
+    fl_c1:'Интерьер және кабинеттер', fl_c2:'Компьютерлік диагностика', fl_c3:'Процедура және дәрігер',
+    fl_tag:'Клиника туралы видео', fl_ttl:'Reflex клиникасы ішінен', fl_btn:'Дыбысымен көру',
+
+    rl1_t:'Жарық және протрузия', rl1_b:'Науқас жарықты емдеу туралы',
+    rl2_t:'Жарықтың резорбциясы', rl2_b:'МРТ суреттерімен келді',
+    rl3_t:'Өкше шпорасы', rl3_b:'Шпораны емдегеннен кейінгі пікір',
+    rl9_t:'Өкше шпорасы', rl9_b:'«Дәл шпора мазалайтын»',
+    rl4_t:'Тізе', rl4_b:'Тізе бірнеше жыл ауырған',
+    rl5_t:'Арқа және аяқ', rl5_b:'«Барлығына ұсынар едім»',
+    rl6_t:'Салмақ тастау', rl6_b:'Бағдарламаның жетінші күні',
+    rl7_t:'Алғашқы қабылдау', rl7_b:'Басқа клиникалардан кейін',
+    rl8_t:'Клиника туралы', rl8_b:'Reflex-ке неге қайта келеді',
+    rl_note:'Видеоны науқастардың келісімімен жариялаймыз. Нәтиже жеке: ол диагнозға, сатысына және ұсыныстардың орындалуына байланысты.',
+
     rv_eye:'Пікірлер және нәтижелер',
     rv_h2:'Науқастардың пікірлері мен нәтижелері',
-    rv_lead:'Біз бөгде адамдардың әңгімелерін және ойдан шығарылған пайыздарды жарияламаймыз. Мұнда науқастарымыздың бейнепікірлері мен суреттері болады - тек олардың келісімімен.',
-    vid_b:'Науқастың бейнепікірі', vid_soon:'жақында',
+    rv_lead:'Науқастарымыздың видеопікірлері - қалай бар, солай. Әрқайсысын дыбысымен толық көруге болады.',
     ba_h:'Курсқа дейінгі және кейінгі МРТ',
     ba_p:'Суреттер блогы осылай көрінеді. Тұтқаны жылжытып көріңіз.',
     ba_before:'Дейін', ba_after:'Кейін',
@@ -350,6 +366,135 @@
         });
         b.addEventListener('mouseleave', function () { b.style.transform = ''; });
       });
+    }
+
+
+    /* ---------- Видео: превью-петли, полка отзывов, модальный плеер ---------- */
+    var vcards = document.querySelectorAll('.vplay');
+    var reelCards = Array.prototype.slice.call(document.querySelectorAll('.reel.vplay'));
+    var modal = document.getElementById('vmodal');
+    var player = document.getElementById('vplayer');
+    var vmT = document.getElementById('vmTitle');
+    var vmS = document.getElementById('vmSub');
+    var modalOpen = false, curIndex = -1, lastFocus = null;
+
+    if (vcards.length){
+
+      var playLoop = function (card) {
+        var v = card.querySelector('.reel-loop');
+        if (!v || modalOpen || reduce) return;
+        if (!v.getAttribute('src')){
+          v.addEventListener('playing', function () { card.classList.add('is-live'); });
+          v.setAttribute('src', v.getAttribute('data-loop'));
+        }
+        var pr = v.play();
+        if (pr && pr.catch) pr.catch(function () {});
+        if (!v.paused) card.classList.add('is-live');
+      };
+
+      var stopLoop = function (card) {
+        var v = card.querySelector('.reel-loop');
+        if (!v) return;
+        card.classList.remove('is-live');
+        try { v.pause(); } catch (e) {}
+      };
+
+      /* петля включается, только когда карточка реально в кадре */
+      if (!reduce && 'IntersectionObserver' in window){
+        var vio = new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            en.target._seen = en.isIntersecting;
+            if (en.isIntersecting) playLoop(en.target); else stopLoop(en.target);
+          });
+        }, { threshold: 0.55 });
+        Array.prototype.forEach.call(vcards, function (c) { vio.observe(c); });
+      }
+
+      var openVideo = function (card) {
+        var src = card.getAttribute('data-video');
+        if (!src || !modal || !player) return;
+        curIndex = reelCards.indexOf(card);
+        lastFocus = card;
+        var t = card.querySelector('.reel-cap b, .film-cap b');
+        var tag = card.querySelector('.reel-tag');
+        var dur = card.querySelector('.reel-dur');
+        var sub = [];
+        if (tag) sub.push(tag.textContent);
+        if (dur) sub.push(dur.textContent);
+        if (vmT) vmT.textContent = t ? t.textContent : '';
+        if (vmS) vmS.textContent = sub.join(' · ');
+        Array.prototype.forEach.call(vcards, function (c) { stopLoop(c); });
+        modalOpen = true;
+        player.setAttribute('src', src);
+        modal.classList.add('is-open');
+        document.body.classList.add('modal-open');
+        var pr = player.play();
+        if (pr && pr.catch) pr.catch(function () {});
+        var navOn = curIndex > -1 && reelCards.length > 1;
+        Array.prototype.forEach.call(modal.querySelectorAll('.vm-prev,.vm-next'), function (b) {
+          b.style.display = navOn ? '' : 'none';
+        });
+        var x = modal.querySelector('.vm-x');
+        if (x) x.focus();
+      };
+
+      var closeVideo = function () {
+        if (!modalOpen) return;
+        modalOpen = false;
+        try { player.pause(); } catch (e) {}
+        player.removeAttribute('src');
+        try { player.load(); } catch (e) {}
+        modal.classList.remove('is-open');
+        document.body.classList.remove('modal-open');
+        Array.prototype.forEach.call(vcards, function (c) { if (c._seen) playLoop(c); });
+        if (lastFocus && lastFocus.focus) lastFocus.focus();
+      };
+
+      var stepVideo = function (d) {
+        if (curIndex < 0 || !reelCards.length) return;
+        openVideo(reelCards[(curIndex + d + reelCards.length) % reelCards.length]);
+      };
+
+      Array.prototype.forEach.call(vcards, function (c) {
+        c.addEventListener('click', function () { openVideo(c); });
+      });
+
+      if (modal){
+        modal.addEventListener('click', function (e) {
+          var el = e.target.closest ? e.target : e.target.parentNode;
+          if (el.closest('.vm-prev')) { stepVideo(-1); return; }
+          if (el.closest('.vm-next')) { stepVideo(1); return; }
+          if (el.closest('[data-vm-close]')) closeVideo();
+        });
+        document.addEventListener('keydown', function (e) {
+          if (!modalOpen) return;
+          if (e.key === 'Escape') closeVideo();
+          else if (e.key === 'ArrowLeft') stepVideo(-1);
+          else if (e.key === 'ArrowRight') stepVideo(1);
+        });
+      }
+
+      /* стрелки полки отзывов */
+      var shelf = document.getElementById('reels');
+      if (shelf){
+        var prevB = document.querySelector('.reels-prev');
+        var nextB = document.querySelector('.reels-next');
+        var first = shelf.querySelector('.reel');
+        var shift = function () {
+          return first ? (first.getBoundingClientRect().width + 16) * 2 : 500;
+        };
+        var syncNav = function () {
+          if (!prevB || !nextB) return;
+          var max = shelf.scrollWidth - shelf.clientWidth - 4;
+          prevB.disabled = shelf.scrollLeft <= 4;
+          nextB.disabled = shelf.scrollLeft >= max;
+        };
+        if (prevB) prevB.addEventListener('click', function () { shelf.scrollLeft -= shift(); });
+        if (nextB) nextB.addEventListener('click', function () { shelf.scrollLeft += shift(); });
+        shelf.addEventListener('scroll', syncNav, { passive: true });
+        window.addEventListener('resize', syncNav);
+        syncNav();
+      }
     }
 
     /* ---------- Плавная прокрутка по якорям ---------- */
