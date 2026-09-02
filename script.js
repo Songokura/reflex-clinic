@@ -144,14 +144,6 @@
     rv_eye:'Пікірлер және нәтижелер',
     rv_h2:'Науқастардың пікірлері мен нәтижелері',
     rv_lead:'Науқастарымыздың видеопікірлері - қалай бар, солай. Әрқайсысын дыбысымен толық көруге болады.',
-    ba_h:'Курсқа дейінгі және кейінгі МРТ',
-    ba_p:'Суреттер блогы осылай көрінеді. Тұтқаны жылжытып көріңіз.',
-    ba_before:'Дейін', ba_after:'Кейін',
-    ba_note:'Плейсхолдер. Нақты суреттерді науқастардың жазбаша келісімінен кейін орналастырамыз.',
-    r2_h:'2GIS сайтындағы пікірлер',
-    r2_p:'Клиника туралы нақты пікірлерді 2GIS парақшасынан оқыған ыңғайлы - сонда өз пікіріңізді де қалдыра аласыз.',
-    r2_btn:'Пікірлерді 2GIS сайтынан ашу',
-    r2_note:'Мәтіндік пікірлерді, тарихтар мен нәтижелерді клиникамен бірге осы блокқа қосамыз.',
 
     ct_eye:'Байланыс',
     ct_h2:'Алматы, Жароков көшесі, 137, «Арай» ТҚ, В2 блогы, 2-қабат',
@@ -342,18 +334,6 @@
       });
     }
 
-    /* ---------- Шторка "до / после" ---------- */
-    var range = document.getElementById('baRange');
-    var clip = document.getElementById('baClip');
-    var line = document.getElementById('baLine');
-    if (range && clip && line){
-      var setBa = function (v) {
-        clip.style.width = v + '%';
-        line.style.left = v + '%';
-      };
-      setBa(range.value);
-      range.addEventListener('input', function () { setBa(range.value); });
-    }
 
     /* ---------- Магнитные кнопки (только мышь) ---------- */
     if (window.matchMedia('(hover: hover) and (pointer: fine)').matches && !reduce){
@@ -369,8 +349,45 @@
     }
 
 
+
+    /* ---------- Видеофон героя ---------- */
+    var heroVid = document.querySelector('.hero-vid');
+    if (heroVid && !reduce){
+      var startHero = function () {
+        var tall = window.matchMedia('(max-width:860px)').matches;
+        var src = heroVid.getAttribute(tall ? 'data-loop-tall' : 'data-loop-wide');
+        if (!src || heroVid.getAttribute('src')) return;
+        heroVid.addEventListener('playing', function () { heroVid.classList.add('is-live'); });
+        heroVid.setAttribute('src', src);
+        var pr = heroVid.play();
+        if (pr && pr.catch) pr.catch(function () {});
+      };
+      /* грузим после основной загрузки - первый экран не должен ждать видео.
+         Страховка на 2.5 с: если какой-то ресурс висит, load может не наступить долго. */
+      var kicked = false;
+      var kick = function () { if (kicked) return; kicked = true; startHero(); };
+      if (document.readyState === 'complete') setTimeout(kick, 400);
+      else {
+        window.addEventListener('load', function () { setTimeout(kick, 400); });
+        setTimeout(kick, 2500);
+      }
+
+      /* за пределами экрана видео стоит на паузе */
+      if ('IntersectionObserver' in window){
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (en) {
+            if (!heroVid.getAttribute('src')) return;
+            if (en.isIntersecting){
+              var pr = heroVid.play();
+              if (pr && pr.catch) pr.catch(function () {});
+            } else heroVid.pause();
+          });
+        }, { threshold: 0.12 }).observe(heroVid);
+      }
+    }
+
     /* ---------- Видео: превью-петли, полка отзывов, модальный плеер ---------- */
-    var vcards = document.querySelectorAll('.vplay');
+    var vcards = document.querySelectorAll('.vplay, .autoloop');
     var reelCards = Array.prototype.slice.call(document.querySelectorAll('.reel.vplay'));
     var modal = document.getElementById('vmodal');
     var player = document.getElementById('vplayer');
@@ -381,7 +398,7 @@
     if (vcards.length){
 
       var playLoop = function (card) {
-        var v = card.querySelector('.reel-loop');
+        var v = card.querySelector('.reel-loop, .dir-loop');
         if (!v || modalOpen || reduce) return;
         if (!v.getAttribute('src')){
           v.addEventListener('playing', function () { card.classList.add('is-live'); });
@@ -393,7 +410,7 @@
       };
 
       var stopLoop = function (card) {
-        var v = card.querySelector('.reel-loop');
+        var v = card.querySelector('.reel-loop, .dir-loop');
         if (!v) return;
         card.classList.remove('is-live');
         try { v.pause(); } catch (e) {}
@@ -455,7 +472,7 @@
         openVideo(reelCards[(curIndex + d + reelCards.length) % reelCards.length]);
       };
 
-      Array.prototype.forEach.call(vcards, function (c) {
+      Array.prototype.forEach.call(document.querySelectorAll('.vplay'), function (c) {
         c.addEventListener('click', function () { openVideo(c); });
       });
 
