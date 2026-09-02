@@ -387,7 +387,7 @@
     }
 
     /* ---------- Видео: превью-петли, полка отзывов, модальный плеер ---------- */
-    var vcards = document.querySelectorAll('.vplay, .autoloop');
+    var vcards = document.querySelectorAll('.vplay');
     var reelCards = Array.prototype.slice.call(document.querySelectorAll('.reel.vplay'));
     var modal = document.getElementById('vmodal');
     var player = document.getElementById('vplayer');
@@ -398,7 +398,7 @@
     if (vcards.length){
 
       var playLoop = function (card) {
-        var v = card.querySelector('.reel-loop, .dir-loop');
+        var v = card.querySelector('.reel-loop');
         if (!v || modalOpen || reduce) return;
         if (!v.getAttribute('src')){
           v.addEventListener('playing', function () { card.classList.add('is-live'); });
@@ -410,7 +410,7 @@
       };
 
       var stopLoop = function (card) {
-        var v = card.querySelector('.reel-loop, .dir-loop');
+        var v = card.querySelector('.reel-loop');
         if (!v) return;
         card.classList.remove('is-live');
         try { v.pause(); } catch (e) {}
@@ -472,7 +472,7 @@
         openVideo(reelCards[(curIndex + d + reelCards.length) % reelCards.length]);
       };
 
-      Array.prototype.forEach.call(document.querySelectorAll('.vplay'), function (c) {
+      Array.prototype.forEach.call(vcards, function (c) {
         c.addEventListener('click', function () { openVideo(c); });
       });
 
