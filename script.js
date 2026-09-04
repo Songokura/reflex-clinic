@@ -10,6 +10,7 @@
   var KZ = {
     nav_dir:'Бағыттар', nav_met:'Әдістер', nav_app:'Reflex тәсілі', nav_price:'Бағалар',
     nav_rev:'Пікірлер', nav_con:'Байланыс', nav_what:'Нені емдейміз', nav_metab:'Салмақ тастау',
+    nav_doc:'Құжаттар',
     hdr_wa:'Жазылу', wa_book:'WhatsApp арқылы жазылу',
     nav_art:'Рефлексотомия', m1_link:'Әдіс туралы толығырақ',
 
@@ -160,8 +161,29 @@
     rt_s3b:'Сол жақтағы есік', rt_s3s:'салон залының тура артында',
     rt_s4b:'Екінші қабат', rt_s4s:'Reflex клиникасы',
 
+    dc_eye:'Құжаттар',
+    dc_h2:'Денсаулық сақтау министрлігінің лицензиясы, әдістемелерге авторлық құқық және тауар таңбалары',
+    dc_lead:'Клиника ресми түрде жұмыс істейді, ал авторлық әдістемелер заң бойынша бізге бекітілген. Құжатты толық көру үшін оны басыңыз.',
+    dc1_k:'ҚР Денсаулық сақтау министрлігінің лицензиясы',
+    dc1_h:'Медициналық қызмет',
+    dc1_m:'№ 25016124 · 19.05.2025 берілген, Алматы қаласы',
+    dc1_t1:'Рефлексотерапия', dc1_t2:'Дәстүрлі медицина', dc1_t3:'Неврология',
+    dc1_t4:'УДЗ диагностикасы', dc1_t5:'Оңалту және массаж', dc1_t6:'Терапия',
+    dc1_t7:'Дерматокосметология',
+    dc1_go:'Лицензия мен 2 қосымшаны қарау',
+    dc2_k:'Авторлық құқық', dc2_h:'«Рефлексотомия» әдістемесі',
+    dc2_m:'№ 77379, 12.08.2026 · ҚР мемлекеттік тізілімі',
+    dc3_k:'Авторлық құқық', dc3_h:'«Рефлекс-жіптер» әдістемесі',
+    dc3_m:'№ 67170, 06.02.2026 · ҚР мемлекеттік тізілімі',
+    dc4_k:'Тауар таңбасы', dc4_h:'«Рефлексотомия»',
+    dc4_m:'№ 116197 · 14.10.2035 дейін қорғалады',
+    dc5_k:'Тауар таңбасы', dc5_h:'REFLEX Women&rsquo;s Clinic',
+    dc5_m:'№ 118007 · 14.10.2035 дейін қорғалады',
+    dc_note:'Лицензия беруші - ҚР Денсаулық сақтау министрлігінің Медициналық және фармацевтикалық бақылау комитетінің Алматы қаласы бойынша департаменті. Куәліктерді Ұлттық зияткерлік меншік институты берген.',
+    dm_full:'Үлкейтіп ашу',
+    m1_badge:'Авторлық әдіс, тауар таңбасы',
     foot_addr:'Алматы, Жароков көшесі, 137, «Арай» ТҚ, В2 блогы, 2-қабат',
-    foot_disc:'Қарсы көрсетілімдері бар, маманмен кеңесу қажет. Сайт материалдары медициналық ұсыныс емес және дәрігердің қабылдауын алмастырмайды. Медициналық қызметке лицензия № <span class="lic-slot">___________</span>.',
+    foot_disc:'Қарсы көрсетілімдері бар, маманмен кеңесу қажет. Сайт материалдары медициналық ұсыныс емес және дәрігердің қабылдауын алмастырмайды. Медициналық қызметке лицензия № 25016124, 19.05.2025.',
     foot_copy:'Reflex Clinic, Алматы. 2024 жылдан бері жұмыс істейміз',
     sb_call:'Қоңырау шалу', sb_wa:'WhatsApp'
   };
@@ -327,7 +349,7 @@
       window.addEventListener('resize', sweep);
 
       /* лёгкая лесенка внутри сеток */
-      Array.prototype.forEach.call(document.querySelectorAll('.cards, .steps, .rev-grid, .mets, .dirs-grid'), function (grid) {
+      Array.prototype.forEach.call(document.querySelectorAll('.cards, .steps, .rev-grid, .mets, .dirs-grid, .docs'), function (grid) {
         Array.prototype.forEach.call(grid.children, function (child, i) {
           child.style.transitionDelay = (i % 4) * 0.07 + 's';
         });
@@ -488,6 +510,82 @@
           if (e.key === 'Escape') closeVideo();
           else if (e.key === 'ArrowLeft') stepVideo(-1);
           else if (e.key === 'ArrowRight') stepVideo(1);
+        });
+      }
+
+      /* ---------- Лайтбокс документов ---------- */
+      var dm = document.getElementById('dmodal');
+      var dmImg = document.getElementById('dmImg');
+      var dmT = document.getElementById('dmTitle');
+      var dmS = document.getElementById('dmSub');
+      var dmFull = document.getElementById('dmFull');
+      var docCards = document.querySelectorAll('.doc-it');
+      if (dm && dmImg && docCards.length){
+        var dmOpen = false, dmSheets = [], dmIdx = 0, dmBack = null;
+
+        var dmShow = function () {
+          var src = dmSheets[dmIdx];
+          dmImg.classList.remove('is-ready');
+          dmImg.setAttribute('src', src);
+          dmImg.setAttribute('alt', dmT ? dmT.textContent : '');
+          if (dmFull) dmFull.setAttribute('href', src);
+          if (dmS) dmS.textContent = dmSheets.length > 1 ? (dmIdx + 1) + ' / ' + dmSheets.length : '';
+          var multi = dmSheets.length > 1;
+          Array.prototype.forEach.call(dm.querySelectorAll('.dm-prev,.dm-next'), function (b) {
+            b.style.display = multi ? '' : 'none';
+          });
+        };
+
+        dmImg.addEventListener('load', function () { dmImg.classList.add('is-ready'); });
+
+        var dmOpenCard = function (card) {
+          var list = (card.getAttribute('data-sheets') || '').split('|').filter(Boolean);
+          if (!list.length) return;
+          dmSheets = list; dmIdx = 0; dmBack = card;
+          var t = card.querySelector('.dc-t');
+          var k = card.querySelector('.doc-kind');
+          if (dmT) dmT.textContent = (k ? k.textContent + ': ' : '') + (t ? t.textContent : '');
+          dmOpen = true;
+          dm.classList.add('is-open');
+          document.body.classList.add('modal-open');
+          dmShow();
+          var x = dm.querySelector('.vm-x');
+          if (x) x.focus();
+        };
+
+        var dmClose = function () {
+          if (!dmOpen) return;
+          dmOpen = false;
+          dm.classList.remove('is-open');
+          document.body.classList.remove('modal-open');
+          dmImg.removeAttribute('src');
+          dmImg.classList.remove('is-ready');
+          if (dmBack && dmBack.focus) dmBack.focus();
+        };
+
+        var dmStep = function (d) {
+          if (dmSheets.length < 2) return;
+          dmIdx = (dmIdx + d + dmSheets.length) % dmSheets.length;
+          dmShow();
+        };
+
+        Array.prototype.forEach.call(docCards, function (c) {
+          c.addEventListener('click', function () { dmOpenCard(c); });
+        });
+
+        dm.addEventListener('click', function (e) {
+          var el = e.target.closest ? e.target : e.target.parentNode;
+          if (el.closest('.dm-full')) return;
+          if (el.closest('.dm-prev')) { dmStep(-1); return; }
+          if (el.closest('.dm-next')) { dmStep(1); return; }
+          if (el.closest('[data-dm-close]')) dmClose();
+        });
+
+        document.addEventListener('keydown', function (e) {
+          if (!dmOpen) return;
+          if (e.key === 'Escape') dmClose();
+          else if (e.key === 'ArrowLeft') dmStep(-1);
+          else if (e.key === 'ArrowRight') dmStep(1);
         });
       }
 

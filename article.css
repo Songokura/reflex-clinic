@@ -197,3 +197,6 @@
   .aline{stroke-dashoffset:0;animation:none}
   .apt::after{animation:none}
 }
+
+.art-doclink{color:var(--turq-3);border-bottom:1px solid rgba(8,122,116,.4);white-space:nowrap}
+.art-doclink:hover{border-bottom-color:var(--turq-3)}
