@@ -36,8 +36,10 @@
 <!-- Google Ads: конверсии. ID кабинета и метки действий - в двух строках ниже (см. _project/konversii.md) -->
 <script>
 (function () {
-  var ID = 'AW-XXXXXXXXXX';
-  var LABELS = { wa: '', tel: '', map: '' };
+  var ID = 'AW-18437797005';
+  /* метки из кабинета: wa - действие «Контакт», tel - «Интерактивные номера телефонов».
+     map (маршрут в 2GIS) не считаем: отдельного действия-конверсии под него не заведено. */
+  var LABELS = { wa: 'PWQwCJ6ko_EcEI3p6ddE', tel: 'SeblCNCIo_EcEI3p6ddE', map: '' };
 
   window.gadsConvert = function () {};
   if (!/^AW-\d+$/.test(ID)) return;
@@ -55,7 +57,11 @@
 
   window.gadsConvert = function (kind) {
     if (!LABELS[kind]) return;
-    gtag('event', 'conversion', { send_to: ID + '/' + LABELS[kind] });
+    gtag('event', 'conversion', {
+      send_to: ID + '/' + LABELS[kind],
+      value: 1.0,
+      currency: 'USD'
+    });
   };
 })();
 
@@ -70,7 +76,7 @@ document.addEventListener('click', function (e) {
   window.gadsConvert(cl.contains('js-wa') ? 'wa' : cl.contains('js-tel') ? 'tel' : 'map');
 }, true);
 </script>
-<link rel="stylesheet" href="styles.css?v=20260908-1">
+<link rel="stylesheet" href="styles.css?v=20260908-2">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -931,6 +937,6 @@ document.addEventListener('click', function (e) {
   </a>
 </div>
 
-<script src="script.js?v=20260908-1" defer></script>
+<script src="script.js?v=20260908-2" defer></script>
 </body>
 </html>
