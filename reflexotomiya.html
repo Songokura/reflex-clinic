@@ -33,6 +33,43 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
 <link href="https://fonts.googleapis.com/css2?family=Geologica:wght@300;400;500;600;700&family=Onest:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<!-- Google Ads: конверсии. ID кабинета и метки действий - в двух строках ниже (см. _project/konversii.md) -->
+<script>
+(function () {
+  var ID = 'AW-XXXXXXXXXX';
+  var LABELS = { wa: '', tel: '', map: '' };
+
+  window.gadsConvert = function () {};
+  if (!/^AW-\d+$/.test(ID)) return;
+
+  window.dataLayer = window.dataLayer || [];
+  function gtag() { dataLayer.push(arguments); }
+  window.gtag = gtag;
+  gtag('js', new Date());
+  gtag('config', ID);
+
+  var s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ID;
+  document.head.appendChild(s);
+
+  window.gadsConvert = function (kind) {
+    if (!LABELS[kind]) return;
+    gtag('event', 'conversion', { send_to: ID + '/' + LABELS[kind] });
+  };
+})();
+
+/* Конверсия считается по действию посетителя, а не по загрузке страницы:
+   сайт одностраничный, и код "страницы благодарности" засчитал бы заявку каждому. */
+document.addEventListener('click', function (e) {
+  var t = e.target;
+  if (!t || !t.closest) return;
+  var a = t.closest('.js-wa, .js-tel, .js-map');
+  if (!a) return;
+  var cl = a.classList;
+  window.gadsConvert(cl.contains('js-wa') ? 'wa' : cl.contains('js-tel') ? 'tel' : 'map');
+}, true);
+</script>
 <link rel="stylesheet" href="styles.css?v=20260908-1">
 <link rel="stylesheet" href="article.css?v=20260908-1">
 <script type="application/ld+json">
