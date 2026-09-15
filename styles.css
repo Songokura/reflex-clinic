@@ -71,6 +71,9 @@ button{font:inherit;color:inherit}
 .dark .btn-line{color:#EAF6F3;border-color:var(--line-d)}
 .dark .btn-line:hover{border-color:var(--mint);color:var(--ink);background:var(--mint)}
 .btn:focus-visible{outline:2px solid var(--turq);outline-offset:3px}
+/* запись на приём: кнопки ведут к форме #zapis */
+.btn-book{background:var(--turq-3);color:#fff;box-shadow:0 10px 26px -12px rgba(8,122,116,.85)}
+.btn-book:hover{background:var(--turq-2);box-shadow:0 16px 34px -12px rgba(8,122,116,.95)}
 
 /* ============================================================
    ШАПКА
@@ -685,6 +688,59 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
 }
 
 /* ============================================================
+   ЗАПИСЬ НА ПРИЁМ (форма, общая для главной и статьи)
+   ============================================================ */
+.book{background:var(--mist)}
+.book-grid{display:grid;grid-template-columns:minmax(0,.82fr) minmax(0,1.18fr);gap:clamp(16px,2.2vw,30px);align-items:stretch}
+.book-info{
+  position:relative;overflow:hidden;border-radius:var(--r-lg);padding:clamp(26px,3.2vw,46px);
+  background:linear-gradient(150deg,var(--ink) 10%,var(--ink-3) 100%);color:#EAF6F3;
+  display:flex;flex-direction:column;gap:clamp(18px,2vw,26px);
+}
+.book-info::before{
+  content:"";position:absolute;right:-90px;top:-90px;width:280px;height:280px;border-radius:50%;
+  background:radial-gradient(circle,rgba(18,179,166,.45),transparent 66%);pointer-events:none;
+}
+.book-info > *{position:relative}
+.book-info .mini-eye{color:var(--mint);margin:0}
+.book-steps{display:grid;gap:22px;position:relative}
+.book-steps::before{content:"";position:absolute;left:4px;top:12px;bottom:12px;border-left:1px dashed rgba(143,233,212,.42)}
+.book-steps li{position:relative;display:grid;gap:4px;padding-left:28px}
+.book-steps li::before{
+  content:"";position:absolute;left:0;top:7px;width:9px;height:9px;border-radius:50%;
+  background:var(--mint);box-shadow:0 0 0 5px rgba(143,233,212,.16);
+}
+.book-steps b{font:500 clamp(17px,1.5vw,20px)/1.25 var(--f-disp);letter-spacing:-.01em;color:#fff}
+.book-steps span{font:400 14.5px/1.5 var(--f-text);color:var(--muted-d)}
+.book-hours{margin-top:auto;padding-top:18px;border-top:1px solid var(--line-d);font:400 14px/1.5 var(--f-text);color:var(--muted-d)}
+
+.bform{
+  background:var(--paper);color:var(--ink);border-radius:var(--r-lg);padding:clamp(22px,2.8vw,38px);
+  display:grid;gap:14px;align-content:start;box-shadow:0 30px 60px -44px rgba(7,39,43,.55);
+}
+.bform-row{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.bform label{display:grid;gap:8px;font:500 11.5px/1.35 var(--f-text);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.bform input,.bform select,.bform textarea{
+  width:100%;border:1px solid rgba(7,39,43,.18);background:var(--paper);border-radius:12px;padding:14px 15px;
+  font:400 16px/1.4 var(--f-text);letter-spacing:0;text-transform:none;color:var(--ink);
+  transition:border-color .2s,box-shadow .2s;
+}
+.bform select{
+  appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:42px;
+  background:var(--paper) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 6 6.5l5-5' fill='none' stroke='%23087A74' stroke-width='1.8'/%3E%3C/svg%3E") no-repeat right 16px center;
+}
+.bform select:invalid{color:var(--muted)}
+.bform option{color:var(--ink)}
+.bform input:focus,.bform select:focus,.bform textarea:focus{outline:0;border-color:var(--turq);box-shadow:0 0 0 3px rgba(18,179,166,.18)}
+.bform .is-bad{border-color:#C8452F;box-shadow:0 0 0 3px rgba(200,69,47,.14)}
+.bform textarea{resize:vertical;min-height:88px}
+.bform .btn{width:100%;margin-top:4px}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.fm-ok{color:var(--turq-3);font:600 15px/1.45 var(--f-text);text-align:center}
+.fm-err{color:#B63A26;font:600 15px/1.45 var(--f-text);text-align:center}
+.fm-note{font:400 12.5px/1.5 var(--f-text);color:var(--muted);text-align:center}
+
+/* ============================================================
    КОНТАКТЫ
    ============================================================ */
 .ct-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:clamp(20px,3vw,50px);align-items:start}
@@ -754,8 +810,8 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   flex:1;display:flex;align-items:center;justify-content:center;gap:8px;
   padding:14px 10px;border-radius:14px;font:600 15px/1 var(--f-text);
 }
-.sb-tel{background:var(--mist-2);color:var(--ink)}
-.sb-wa{background:var(--wa);color:#fff}
+.sb-book{background:var(--turq-3);color:#fff}
+body.menu-open .sticky-bar{visibility:hidden}
 
 /* ============================================================
    АДАПТИВ
@@ -785,6 +841,8 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   .price-grid{grid-template-columns:1fr}
   .rev-grid{grid-template-columns:1fr 1fr}
   .ct-grid{grid-template-columns:1fr}
+  .book-grid{grid-template-columns:1fr}
+  .book-grid .bform{order:-1}
   .foot-top{grid-template-columns:1fr;gap:26px}
   .foot-contacts{justify-items:start;text-align:left}
 }
@@ -828,6 +886,7 @@ body.menu-open .mobnav-in > a{animation:mnav .5s var(--ease) forwards;animation-
   .vid{aspect-ratio:16/11}
   .steps{grid-template-columns:1fr}
   .ct-row{grid-template-columns:1fr;gap:8px;padding:18px 0}
+  .bform-row{grid-template-columns:1fr}
   .dir-list span{font-size:12.5px;padding:6px 11px}
   .approach-bg{width:70vw;right:-18%;opacity:.07}
   .ticker-set span{font-size:13px;padding:0 15px}

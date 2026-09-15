@@ -1,4 +1,14 @@
 User-agent: *
 Allow: /
+Disallow: /assets/lang/
+Disallow: /*lang=kk
+Disallow: /*lang=kz
+
+User-agent: AdsBot-Google
+User-agent: AdsBot-Google-Mobile
+Allow: /
+Disallow: /assets/lang/
+Disallow: /*lang=kk
+Disallow: /*lang=kz
 
 Sitemap: https://reflex-clinic.kz/sitemap.xml
