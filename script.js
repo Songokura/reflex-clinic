@@ -11,15 +11,33 @@
      (или открыл ?lang=kk / выбрал раньше). В разметке и в этом файле казахского текста нет:
      проверка Google Ads («Неподдерживаемый язык») видит только русский сайт.
      Версия файла - из ?v= этого скрипта, бампается вместе с остальными ассетами. */
-  var ASSET_V = ((document.currentScript && document.currentScript.src.match(/[?&]v=([^&]+)/)) || [])[1] || '';
+  var SELF = (document.currentScript && document.currentScript.src) || '';
+  var ASSET_V = (SELF.match(/[?&]v=([^&]+)/) || [])[1] || '';
+  /* База путей - от адреса самого скрипта, а не от страницы: посадочные лежат
+     в подпапках (/gryzha/), и относительный путь искал бы словарь внутри них.
+     Свой словарь страница задаёт атрибутом data-kk на теге скрипта. */
+  var BASE = SELF ? SELF.replace(/[?#].*$/, '').replace(/[^\/]*$/, '') : '';
+  var KK_FILE = (document.currentScript && document.currentScript.getAttribute('data-kk')) || 'kk.js';
   var KK = null, KZ = {};
   function loadKK(done){
     if (KK) return done();
     var s = document.createElement('script');
-    s.src = 'assets/lang/kk.js' + (ASSET_V ? '?v=' + ASSET_V : '');
+    s.src = BASE + 'assets/lang/' + KK_FILE + (ASSET_V ? '?v=' + ASSET_V : '');
     s.onload = function () { if (window.SITE_KK){ KK = window.SITE_KK; KZ = KK.dict || {}; } done(); };
     s.onerror = function () { done(); };
     document.head.appendChild(s);
+  }
+
+  /* ---------- Быстрый канал WhatsApp ----------
+     Текст сообщения зависит от языка, поэтому href пересобирается при СМЕНЕ ЯЗЫКА,
+     а не в момент клика: иначе обработчик сайта затёр бы код обращения, который
+     дописывает трекер LeadBot (см. правило про site-rewrites-wa-href). */
+  var WA_NUM = '77000707791';
+  var WA_RU = 'Здравствуйте! Пишу с сайта Reflex Clinic - подскажите, пожалуйста, по лечению.';
+  function syncWA(l){
+    var t = (l === 'kz' && KK && KK.wa) ? KK.wa : WA_RU;
+    var a = document.querySelectorAll('a[data-wa]'), i;
+    for (i = 0; i < a.length; i++) a[i].href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(t);
   }
 
   var META_RU = { title: document.title, desc: '' };
@@ -69,6 +87,7 @@
       btns[i].setAttribute('aria-pressed', on ? 'true' : 'false');
     }
     fillTicker(l);
+    syncWA(l);
     lang = l;
     try { localStorage.setItem('reflex-lang', l); } catch (e) {}
   }
@@ -93,7 +112,14 @@
     var saved = null;
     try { saved = localStorage.getItem('reflex-lang'); } catch (e) {}
     var start = urlLang || (saved === 'kz' ? 'kz' : 'ru');
-    if (start !== 'ru') setLang(start); else fillTicker('ru');
+    if (start !== 'ru') setLang(start); else { fillTicker('ru'); syncWA('ru'); }
+
+    /* клик по WhatsApp - действие «WhatsApp с сайта» в Google Ads.
+       Только отправка события: href не трогаем, его уже дополнил трекер LeadBot. */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[data-wa]') : null;
+      if (a && typeof window.gadsConvert === 'function') window.gadsConvert('wa');
+    });
 
     var langBtns = document.querySelectorAll('.lang-btn');
     Array.prototype.forEach.call(langBtns, function (b) {

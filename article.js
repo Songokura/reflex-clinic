@@ -22,6 +22,17 @@
     document.head.appendChild(s);
   }
 
+  /* ---------- Быстрый канал WhatsApp ----------
+     href пересобирается при смене языка, а не в момент клика: иначе обработчик сайта
+     затёр бы код обращения, который дописывает трекер LeadBot. */
+  var WA_NUM = '77000707791';
+  var WA_RU = 'Здравствуйте! Пишу с сайта Reflex Clinic - подскажите, пожалуйста, по рефлексотомии.';
+  function syncWA(l){
+    var t = (l === 'kz' && KK && KK.wa) ? KK.wa : WA_RU;
+    var a = document.querySelectorAll('a[data-wa]'), i;
+    for (i = 0; i < a.length; i++) a[i].href = 'https://wa.me/' + WA_NUM + '?text=' + encodeURIComponent(t);
+  }
+
   var META_RU = { title: document.title, desc: '' };
 
   var RU = {}, lang = 'ru';
@@ -56,6 +67,7 @@
       btns[i].classList.toggle('is-active', on);
       btns[i].setAttribute('aria-pressed', on ? 'true' : 'false');
     }
+    syncWA(l);
     lang = l;
     try { localStorage.setItem('reflex-lang', l); } catch (e) {}
   }
@@ -79,7 +91,13 @@
     var saved = null;
     try { saved = localStorage.getItem('reflex-lang'); } catch (e) {}
     var start = urlLang || (saved === 'kz' ? 'kz' : 'ru');
-    if (start !== 'ru') setLang(start);
+    if (start !== 'ru') setLang(start); else syncWA('ru');
+
+    /* клик по WhatsApp - действие «WhatsApp с сайта» в Google Ads */
+    document.addEventListener('click', function (e) {
+      var a = e.target.closest ? e.target.closest('a[data-wa]') : null;
+      if (a && typeof window.gadsConvert === 'function') window.gadsConvert('wa');
+    });
 
     Array.prototype.forEach.call(document.querySelectorAll('.lang-btn'), function (b) {
       b.addEventListener('click', function () {
